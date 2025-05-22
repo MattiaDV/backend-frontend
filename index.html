@@ -3,10 +3,13 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>FullStack Website</title>
+        <title>WorldChat - official</title>
         <link rel = "stylesheet" href = "style/style.css">
+        <link rel="manifest" href="./webapp/site.webmanifest">
     </head>
     <body>
+
+      <div class = "upperPart">WorldChat</div>
 
   <form id="form">
     <input type="text" name="nickname" placeholder="nickname" required>
@@ -32,6 +35,7 @@
           </div>
         `;
         chatg.innerHTML += html;
+        chatg.scrollTop = chatg.scrollHeight;
       }
 
       fetch('/pages/messages.json')

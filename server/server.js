@@ -55,6 +55,6 @@ io.on('connection', (socket) => {
 });
 
 // Fai partire il server HTTP (non app.listen)
-server.listen(port, "127.0.0.1", () => {
+server.listen(port, () => {
     console.log(`Listening on https://backend-frontend-pa0b.onrender.com:${port}`);
 });

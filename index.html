@@ -10,6 +10,7 @@
     <body>
 
       <div class = "upperPart">WorldChat</div>
+      <div class = "space-lower"></div>
 
   <form id="form">
     <input type="text" value = "Anonimo" name="nickname" placeholder="nickname" required readonly>
@@ -29,7 +30,7 @@
 
       function aggiungiMessaggio(nickname, messaggio) {
         const html = `
-          <div class = "messaggiocompleto">
+          <div class = "messaggiocompleto mio">
             <div class="nickname">${nickname}</div>
             <div class="message">${messaggio}</div>
           </div>

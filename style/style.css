@@ -12,6 +12,9 @@
 }
 
 .upperPart {
+    position: fixed;
+    top: 0;
+    left: 0;
     padding: 20px;
     width: 100%;
     background: black;
@@ -107,6 +110,16 @@ ul > li {
 
 .space {
     height: 50vh;
+}
+
+.space-lower {
+    height: 10vh;
+}
+
+.mio {
+    background: lightblue;
+    border: 1px solid lightblue;
+    color: black;
 }
 
 #form > input {

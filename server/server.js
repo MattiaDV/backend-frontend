@@ -47,11 +47,10 @@ app.post('/messaggio', async (req, res) => {
 
 // Socket.IO: gestione connessioni
 io.on('connection', (socket) => {
-    console.log('Utente connesso:', socket.id);
-
-    socket.on('disconnect', () => {
-        console.log('Utente disconnesso:', socket.id);
-    });
+  socket.on('sendMessage', (msg) => {
+    // Invia a tutti tranne chi ha inviato il messaggio
+    socket.broadcast.emit('newMessage', msg);
+  });
 });
 
 // Fai partire il server HTTP (non app.listen)

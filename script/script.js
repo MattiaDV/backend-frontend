@@ -28,7 +28,7 @@ fetch('../pages/messages.json')
   .then(messages => {
     if(messages.length > 0) {
       let html = '';
-      for (let i = 0; i < messages.length; i++) {
+      for (let i = 1; i < messages.length; i++) {
         html += `
           <div class = "messaggiocompleto">
           <div class="nickname">${messages[i].nickname}</div>

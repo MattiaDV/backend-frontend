@@ -25,50 +25,55 @@
   <script src="/socket.io/socket.io.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const chatg = document.getElementById('chatGene');
-      const form = document.getElementById('form');
+    const chatg = document.getElementById('chatGene');
+    const form = document.getElementById('form');
 
-      function aggiungiMessaggio(nickname, messaggio) {
-        const html = `
-          <div class = "messaggiocompleto mio">
-            <div class="nickname">${nickname}</div>
-            <div class="message">${messaggio}</div>
-          </div>
-        `;
-        chatg.innerHTML += html;
-        chatg.scrollTop = chatg.scrollHeight;
-      }
+    function aggiungiMessaggio(nickname, messaggio, isMio = false) {
+      const classeMio = isMio ? ' mio' : '';
+      const html = `
+        <div class="messaggiocompleto${classeMio}">
+          <div class="nickname">${nickname}</div>
+          <div class="message">${messaggio}</div>
+        </div>
+      `;
+      chatg.innerHTML += html;
+      chatg.scrollTop = chatg.scrollHeight;
+    }
 
-      fetch('/pages/messages.json')
-        .then(res => res.json())
-        .then(messages => {
-          messages.forEach(m => aggiungiMessaggio(m.nickname, m.messaggio));
-        });
-
-      const socket = io();
-
-      socket.on('newMessage', ({ nickname, messaggio }) => {
-        aggiungiMessaggio(nickname, messaggio);
+    // Carica messaggi storici, tutti "non miei"
+    fetch('/pages/messages.json')
+      .then(res => res.json())
+      .then(messages => {
+        messages.forEach(m => aggiungiMessaggio(m.nickname, m.messaggio));
       });
 
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const nickname = form.nickname.value;
-        const messaggio = form.message.value;
+    const socket = io();
 
-        const res = await fetch('/messaggio', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ nickname, messaggio })
-        });
-
-        if (res.ok) {
-          form.reset();
-        } else {
-          alert('Errore nell\'invio del messaggio');
-        }
-      });
+    // Messaggi ricevuti da altri utenti
+    socket.on('newMessage', ({ nickname, messaggio }) => {
+      aggiungiMessaggio(nickname, messaggio, false);
     });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const nickname = form.nickname.value;
+      const messaggio = form.message.value;
+
+      const res = await fetch('/messaggio', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nickname, messaggio })
+      });
+
+      if (res.ok) {
+        // Mostro subito il messaggio con classe "mio"
+        aggiungiMessaggio(nickname, messaggio, true);
+        form.reset();
+      } else {
+        alert('Errore nell\'invio del messaggio');
+      }
+    });
+  });
   </script>
 </body>
     </body>

@@ -99,6 +99,7 @@ ul > li {
     align-items: center;
     width: 100%;
     padding: 20px;
+    padding-bottom: 40px;
     width: 100%;
     flex-wrap: wrap;
     gap: 10px;

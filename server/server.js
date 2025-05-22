@@ -5,7 +5,7 @@ import http from 'http';
 import { Server } from 'socket.io';
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 // Crea server HTTP da Express
 const server = http.createServer(app);
@@ -56,5 +56,5 @@ io.on('connection', (socket) => {
 
 // Fai partire il server HTTP (non app.listen)
 server.listen(port, "127.0.0.1", () => {
-    console.log(`Listening on https://backend-frontend-xtk4.onrender.com`);
+    console.log(`Listening on https://backend-frontend-xtk4.onrender.com:${port}`);
 });

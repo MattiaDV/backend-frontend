@@ -34,7 +34,7 @@ app.post('/messaggio', async (req, res) => {
         await writeFile('./pages/messages.json', JSON.stringify(messages, null, 2), 'utf8');
 
         // Manda il messaggio a tutti i client connessi via socket
-        io.emit('newMessage', req.body);
+        socket.broadcast.emit('newMessage', req.body);
 
         res.writeHead(200, { 'Content-Type': 'text/plain' });
         res.end('Messaggio aggiunto con successo!');

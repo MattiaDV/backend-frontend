@@ -49,29 +49,23 @@
 
     const socket = io();
 
-    // Messaggi ricevuti da altri utenti
+    // Quando ricevo messaggi dagli altri (non "mio")
     socket.on('newMessage', ({ nickname, messaggio }) => {
       aggiungiMessaggio(nickname, messaggio, false);
     });
 
-    form.addEventListener('submit', async (e) => {
+    form.addEventListener('submit', (e) => {
       e.preventDefault();
       const nickname = form.nickname.value;
       const messaggio = form.message.value;
 
-      const res = await fetch('/messaggio', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nickname, messaggio })
-      });
+      // Mostro subito il messaggio come "mio"
+      aggiungiMessaggio(nickname, messaggio, true);
 
-      if (res.ok) {
-        // Mostro subito il messaggio con classe "mio"
-        aggiungiMessaggio(nickname, messaggio, true);
-        form.reset();
-      } else {
-        alert('Errore nell\'invio del messaggio');
-      }
+      // Invio il messaggio via socket al server
+      socket.emit('sendMessage', { nickname, messaggio });
+
+      form.reset();
     });
   });
   </script>

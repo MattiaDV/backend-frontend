@@ -24,7 +24,7 @@ app.get('/index', async (req, res) => {
     getPages.getIndex(req, res);
 });
 
-app.post('/messaggio', async (req, res) => {
+/** app.post('/messaggio', async (req, res) => {
     try {
         const data = await readFile('./pages/messages.json', 'utf8');
         const messages = JSON.parse(data);
@@ -34,7 +34,7 @@ app.post('/messaggio', async (req, res) => {
         await writeFile('./pages/messages.json', JSON.stringify(messages, null, 2), 'utf8');
 
         // Manda il messaggio a tutti i client connessi via socket
-        // socket.broadcast.emit('newMessage', req.body);
+        io.emit('newMessage', req.body);
 
         res.writeHead(200, { 'Content-Type': 'text/plain' });
         res.end('Messaggio aggiunto con successo!');
@@ -43,13 +43,32 @@ app.post('/messaggio', async (req, res) => {
         console.log("Errore: ", err);
         res.end('Errore del server interno');
     }
-});
+}); **/
 
 // Socket.IO: gestione connessioni
-io.on('connection', (socket) => {
+/** io.on('connection', (socket) => {
   socket.on('sendMessage', (msg) => {
     // Invia a tutti tranne chi ha inviato il messaggio
     socket.broadcast.emit('newMessage', msg);
+  });
+}); **/
+
+io.on('connection', (socket) => {
+  socket.on('sendMessage', async (msg) => {
+    try {
+      // Leggi file messaggi
+      const data = await readFile('./pages/messages.json', 'utf8');
+      const messages = JSON.parse(data);
+
+      // Aggiungi nuovo messaggio
+      messages.push(msg);
+      await writeFile('./pages/messages.json', JSON.stringify(messages, null, 2), 'utf8');
+
+      // Manda a tutti tranne chi ha inviato
+      socket.broadcast.emit('newMessage', msg);
+    } catch (err) {
+      console.error(err);
+    }
   });
 });
 

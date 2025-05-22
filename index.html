@@ -8,19 +8,63 @@
     </head>
     <body>
 
-        <div class = "container-page">
-            <div class = "upper-part navbar">
-                <ul>
-                    <li class = "normal" id = "home">Home</li>
-                    <li class = "normal">Chi siamo</li>
-                    <li class = "normal">Cos'è?</li>
-                    <li class = "special"><button id = "login">LOG IN</button></li>
-                    <li class = "special"><button id = "signin">SIGN IN</button></li>
-                </ul>
-            </div>
-        </div>
-        
-        <script src = "script/script.js"></script>
+  <form id="form">
+    <input type="text" name="nickname" placeholder="nickname" required>
+    <textarea name="message" placeholder="Inserisci il tuo messaggio" required></textarea>
+    <input type="submit" value="Invia">
+  </form>
 
+  <div id="chatGene"></div>
+  <div class = "space"></div>
+
+  <script type = "module" src = "script/script.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const chatg = document.getElementById('chatGene');
+      const form = document.getElementById('form');
+
+      function aggiungiMessaggio(nickname, messaggio) {
+        const html = `
+          <div class = "messaggiocompleto">
+            <div class="nickname">${nickname}</div>
+            <div class="message">${messaggio}</div>
+          </div>
+        `;
+        chatg.innerHTML += html;
+      }
+
+      fetch('/pages/messages.json')
+        .then(res => res.json())
+        .then(messages => {
+          messages.forEach(m => aggiungiMessaggio(m.nickname, m.messaggio));
+        });
+
+      const socket = io();
+
+      socket.on('newMessage', ({ nickname, messaggio }) => {
+        aggiungiMessaggio(nickname, messaggio);
+      });
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const nickname = form.nickname.value;
+        const messaggio = form.message.value;
+
+        const res = await fetch('/messaggio', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nickname, messaggio })
+        });
+
+        if (res.ok) {
+          form.reset();
+        } else {
+          alert('Errore nell\'invio del messaggio');
+        }
+      });
+    });
+  </script>
+</body>
     </body>
 </html>
